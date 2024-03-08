@@ -36,6 +36,12 @@
             Disks = new Label();
             DiskCount = new NumericUpDown();
             RedrawButton = new Button();
+            DiskColour = new Button();
+            PoleColour = new Button();
+            PoleBackground = new Button();
+            GameBackground = new Button();
+            colorDialog1 = new ColorDialog();
+            colorDialog2 = new ColorDialog();
             ((System.ComponentModel.ISupportInitialize)PoleCount).BeginInit();
             ((System.ComponentModel.ISupportInitialize)DiskCount).BeginInit();
             SuspendLayout();
@@ -65,7 +71,7 @@
             // 
             PoleCount.Location = new Point(1352, 129);
             PoleCount.Margin = new Padding(30, 3, 30, 3);
-            PoleCount.Maximum = new decimal(new int[] { 1500, 0, 0, 0 });
+            PoleCount.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
             PoleCount.Minimum = new decimal(new int[] { 3, 0, 0, 0 });
             PoleCount.Name = "PoleCount";
             PoleCount.Size = new Size(46, 27);
@@ -124,11 +130,55 @@
             RedrawButton.UseVisualStyleBackColor = true;
             RedrawButton.Click += RedrawButton_Click;
             // 
+            // DiskColour
+            // 
+            DiskColour.Location = new Point(1216, 225);
+            DiskColour.Name = "DiskColour";
+            DiskColour.Size = new Size(94, 29);
+            DiskColour.TabIndex = 8;
+            DiskColour.Text = "Disk Colour";
+            DiskColour.UseVisualStyleBackColor = true;
+            DiskColour.Click += DiskColour_Click;
+            // 
+            // PoleColour
+            // 
+            PoleColour.Location = new Point(1316, 225);
+            PoleColour.Name = "PoleColour";
+            PoleColour.Size = new Size(94, 29);
+            PoleColour.TabIndex = 9;
+            PoleColour.Text = "Pole Colour";
+            PoleColour.UseVisualStyleBackColor = true;
+            PoleColour.Click += PoleColour_Click;
+            // 
+            // PoleBackground
+            // 
+            PoleBackground.Location = new Point(1216, 307);
+            PoleBackground.Name = "PoleBackground";
+            PoleBackground.Size = new Size(194, 29);
+            PoleBackground.TabIndex = 10;
+            PoleBackground.Text = "Pole Background";
+            PoleBackground.UseVisualStyleBackColor = true;
+            PoleBackground.Click += PoleBackground_Click;
+            // 
+            // GameBackground
+            // 
+            GameBackground.Location = new Point(1216, 398);
+            GameBackground.Name = "GameBackground";
+            GameBackground.Size = new Size(194, 29);
+            GameBackground.TabIndex = 11;
+            GameBackground.Text = "Game Background";
+            GameBackground.UseVisualStyleBackColor = true;
+            GameBackground.Click += GameBackground_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1422, 763);
+            Controls.Add(GameBackground);
+            Controls.Add(PoleBackground);
+            Controls.Add(PoleColour);
+            Controls.Add(DiskColour);
             Controls.Add(RedrawButton);
             Controls.Add(PoleCount);
             Controls.Add(DiskCount);
@@ -156,5 +206,11 @@
         private Label Disks;
         private NumericUpDown DiskCount;
         private Button RedrawButton;
+        private Button DiskColour;
+        private Button PoleColour;
+        private Button PoleBackground;
+        private Button GameBackground;
+        private ColorDialog colorDialog1;
+        private ColorDialog colorDialog2;
     }
 }
