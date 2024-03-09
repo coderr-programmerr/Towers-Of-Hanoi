@@ -42,6 +42,8 @@
             GameBackground = new Button();
             colorDialog1 = new ColorDialog();
             colorDialog2 = new ColorDialog();
+            AIMode = new Button();
+            Check = new Button();
             ((System.ComponentModel.ISupportInitialize)PoleCount).BeginInit();
             ((System.ComponentModel.ISupportInitialize)DiskCount).BeginInit();
             SuspendLayout();
@@ -61,11 +63,13 @@
             // 
             // GamePanel
             // 
+            GamePanel.BackgroundImageLayout = ImageLayout.None;
             GamePanel.BorderStyle = BorderStyle.Fixed3D;
             GamePanel.Location = new Point(30, 30);
             GamePanel.Name = "GamePanel";
             GamePanel.Size = new Size(1180, 700);
             GamePanel.TabIndex = 2;
+            GamePanel.Paint += GamePanel_Paint;
             // 
             // PoleCount
             // 
@@ -122,9 +126,9 @@
             // RedrawButton
             // 
             RedrawButton.Font = new Font("Stencil", 22.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            RedrawButton.Location = new Point(1227, 525);
+            RedrawButton.Location = new Point(1216, 496);
             RedrawButton.Name = "RedrawButton";
-            RedrawButton.Size = new Size(183, 61);
+            RedrawButton.Size = new Size(194, 61);
             RedrawButton.TabIndex = 7;
             RedrawButton.Text = "Redraw";
             RedrawButton.UseVisualStyleBackColor = true;
@@ -152,7 +156,7 @@
             // 
             // PoleBackground
             // 
-            PoleBackground.Location = new Point(1216, 307);
+            PoleBackground.Location = new Point(1216, 260);
             PoleBackground.Name = "PoleBackground";
             PoleBackground.Size = new Size(194, 29);
             PoleBackground.TabIndex = 10;
@@ -162,7 +166,7 @@
             // 
             // GameBackground
             // 
-            GameBackground.Location = new Point(1216, 398);
+            GameBackground.Location = new Point(1216, 295);
             GameBackground.Name = "GameBackground";
             GameBackground.Size = new Size(194, 29);
             GameBackground.TabIndex = 11;
@@ -170,11 +174,35 @@
             GameBackground.UseVisualStyleBackColor = true;
             GameBackground.Click += GameBackground_Click;
             // 
+            // AIMode
+            // 
+            AIMode.Font = new Font("Stencil", 22.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            AIMode.Location = new Point(1216, 392);
+            AIMode.Name = "AIMode";
+            AIMode.Size = new Size(194, 59);
+            AIMode.TabIndex = 12;
+            AIMode.Text = "AI Mode";
+            AIMode.UseVisualStyleBackColor = true;
+            AIMode.Click += AIMode_Click;
+            // 
+            // Check
+            // 
+            Check.Font = new Font("Stencil", 28.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Check.Location = new Point(1216, 592);
+            Check.Name = "Check";
+            Check.Size = new Size(194, 138);
+            Check.TabIndex = 13;
+            Check.Text = "CHECK";
+            Check.UseVisualStyleBackColor = true;
+            Check.Click += Check_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1422, 763);
+            Controls.Add(Check);
+            Controls.Add(AIMode);
             Controls.Add(GameBackground);
             Controls.Add(PoleBackground);
             Controls.Add(PoleColour);
@@ -212,5 +240,7 @@
         private Button GameBackground;
         private ColorDialog colorDialog1;
         private ColorDialog colorDialog2;
+        private Button AIMode;
+        private Button Check;
     }
 }

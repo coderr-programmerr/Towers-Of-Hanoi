@@ -1,40 +1,139 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Media;
+using System.Reflection.Emit;
+using System.Windows.Forms;
 
 namespace TowersofHanoi
 {
     public partial class Form1 : Form
     {
+
         Color colourOfDisks = Color.Red;
         Color colourOfPoles = Color.Brown;
         Color backgroundOfPoles = Color.LightGoldenrodYellow;
-        Color backgroundOfGame = Color.LightCyan;
+        Color backgroundOfGame;
 
+        int buttonPresses = 0;
 
-        Dictionary<PictureBox, Stack<int?>> globPoleStack = new Dictionary<PictureBox, Stack<int?>>();
+        Stack<int> startStack = new Stack<int>();
+        Stack<int> destStack = new Stack<int>();
+        PictureBox startPBox = new PictureBox();
+
+        Dictionary<PictureBox, Stack<int>> globPoleStack = new Dictionary<PictureBox, Stack<int>>();
+
+        Dictionary<Button, PictureBox> globButtonPictureBox = new Dictionary<Button, PictureBox>();
+
         int globPoles = 3;
         int globDisks = 6;
-        private List<Stack<int?>> gameData = InitializePoles(3, 6);
+        private List<Stack<int>> gameData = InitializePoles(3, 6);
+        List<PictureBox> globPBoxes;
 
+
+        private SoundPlayer soundPlayer;
         public Form1()
         {
             InitializeComponent();
             var gameObjects = InitializePictureButtons(globPoles);
-            var (pictureBoxes, buttons) = gameObjects;
-            updateDictionary(pictureBoxes);
-            foreach (var pictureBox in pictureBoxes)
+            var (locPictureBoxes, buttons) = gameObjects;
+            globPBoxes = locPictureBoxes;
+            updateDictionary(locPictureBoxes);
+            updateBPDictionary(locPictureBoxes, buttons);
+            foreach (var pictureBox in globPBoxes)
             {
                 pictureBox.Paint += PictureBox_Paint;
             }
-            DrawPolesAndDisks(pictureBoxes);
-        }
+            DrawPolesAndDisks(locPictureBoxes);
 
+
+            soundPlayer = new SoundPlayer();
+
+            // Set the path to your sound file
+            soundPlayer.Stream = Properties.Resources.I_Deserve_A_Little_Bit_More;
+
+            soundPlayer.PlayLooping();
+
+
+
+
+        }
 
         private void PictureBox_Paint(object? sender, PaintEventArgs e)
         {
-            PictureBox pictureBox1 = (PictureBox)sender;
+            PictureBox pictureBox1 =
+                (PictureBox)sender;
             DrawPole(e.Graphics, pictureBox1);
-            DrawDisks(e.Graphics, pictureBox1, Color.Red);
+            DrawDisks(e.Graphics, pictureBox1);
+        }
+
+        private void DynamicButton_Click(object sender, EventArgs e)
+        {
+            Button clickedButton = (Button)sender;
+            PictureBox pBox = globButtonPictureBox[clickedButton];
+            startPBox = pBox;
+            int value;
+            bool startStackIsEmpty = false;
+            bool destStackIsEmpty = false;
+            destStack = globPoleStack[pBox];
+
+            if (destStack.Count() == 0)
+            {
+                destStackIsEmpty = true;
+            }
+
+            if (startStack.Count() == 0)
+            {
+                startStackIsEmpty = true;
+            }
+
+
+            buttonPresses += 1;
+
+            if (buttonPresses % 2 == 0)
+            {
+                if (startStackIsEmpty)
+                {
+                    return;
+                }
+
+                if (destStackIsEmpty)
+                {
+                    value = startStack.Peek();
+                    startStack.Pop();
+                    destStack.Push(value);
+                    return;
+
+                }
+
+                if (startStack.Peek() < destStack.Peek())
+                {
+                    value = startStack.Peek();
+                    startStack.Pop();
+                    destStack.Push(value);
+                }
+                globPoleStack[startPBox] = startStack;
+                globPoleStack[pBox] = destStack;
+                GamePanel.BackColor = backgroundOfGame;
+                foreach (var pictureBox in globPBoxes)
+                {
+                    pictureBox.Paint += PictureBox_Paint;
+                }
+                DrawPolesAndDisks(globPBoxes);
+                gameData.Clear();
+                foreach (PictureBox picBox in globPBoxes)
+                {
+                    gameData.Add(globPoleStack[picBox]);
+                }
+
+
+            }
+            else
+            {
+                startStack = globPoleStack[pBox];
+            }
+
+
         }
 
         private void DrawPolesAndDisks(List<PictureBox> pictureBoxes)
@@ -47,18 +146,24 @@ namespace TowersofHanoi
 
         private Color GetDarkerColor(int index, Color baseColor)
         {
-            float factor = (float)index / globDisks;
+            int usedNum = globDisks - index;
+            float factor = (float)usedNum / globDisks;
             int r = (int)(baseColor.R * factor);
             int g = (int)(baseColor.G * factor);
             int b = (int)(baseColor.B * factor);
             return Color.FromArgb(r, g, b);
         }
 
-        public void DrawDisks(Graphics g, PictureBox pictureBox, Color diskColour)
+        public void DrawDisks(Graphics g, PictureBox pictureBox)
         {
             int count = 0;
-            foreach (int? disk in globPoleStack[pictureBox])
+            int? disk;
+
+            for (int i = globPoleStack[pictureBox].Count() - 1; i >= 0; i--)
             {
+
+                List<int> myList = new List<int>(globPoleStack[pictureBox]);
+                disk = myList[i];
                 if (disk == null)
                 {
                     break;
@@ -120,13 +225,22 @@ namespace TowersofHanoi
             }
         }
 
-        private static List<Stack<int?>> InitializePoles(int poles, int disks)
+        private void updateBPDictionary(List<PictureBox> pictureBoxes, List<Button> buttons)
         {
-            List<Stack<int?>> poleList = new List<Stack<int?>>();
+            globButtonPictureBox.Clear();
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                globButtonPictureBox.Add(buttons[i], pictureBoxes[i]);
+            }
+        }
+
+        private static List<Stack<int>> InitializePoles(int poles, int disks)
+        {
+            List<Stack<int>> poleList = new List<Stack<int>>();
 
             for (int i = 0; i < poles; i++)
             {
-                Stack<int?> pole = new Stack<int?>();
+                Stack<int> pole = new Stack<int>();
 
                 // Only fill the first stack
                 if (i == 0)
@@ -196,7 +310,7 @@ namespace TowersofHanoi
                 Size = new System.Drawing.Size(Convert.ToInt16(gameSpace / (x + 1)), Convert.ToInt16(height * 0.1)),
                 BackColor = Color.LightGray
             };
-
+            button.Click += DynamicButton_Click;
 
             // Set additional properties or event handlers if needed.
 
@@ -215,15 +329,18 @@ namespace TowersofHanoi
 
             GamePanel.Controls.Clear();
             var gameObjects = InitializePictureButtons(globPoles);
-            var (pictureBoxes, buttons) = gameObjects;
+            var (locPictureBoxes, buttons) = gameObjects;
             gameData = InitializePoles(globPoles, globDisks);
-            updateDictionary(pictureBoxes);
+            globPBoxes = locPictureBoxes;
+            updateDictionary(locPictureBoxes);
+            updateBPDictionary(locPictureBoxes, buttons);
             GamePanel.BackColor = backgroundOfGame;
-            foreach (var pictureBox in pictureBoxes)
+            foreach (var pictureBox in locPictureBoxes)
             {
                 pictureBox.Paint += PictureBox_Paint;
             }
-            DrawPolesAndDisks(pictureBoxes);
+            DrawPolesAndDisks(locPictureBoxes);
+            buttonPresses = 0;
         }
 
         private void DiskColour_Click(object sender, EventArgs e)
@@ -236,14 +353,14 @@ namespace TowersofHanoi
             // Sets the initial color select to the current text color.
             MyDialog.Color = DiskColour.BackColor;
 
-            
+
             // Update the text box color if the user clicks OK 
             if (MyDialog.ShowDialog() == DialogResult.OK)
             {
                 DiskColour.BackColor = MyDialog.Color;
                 colourOfDisks = MyDialog.Color;
             }
-                
+
         }
 
         private void PoleColour_Click(object sender, EventArgs e)
@@ -256,7 +373,7 @@ namespace TowersofHanoi
             // Sets the initial color select to the current text color.
             MyDialog.Color = PoleColour.BackColor;
 
-            
+
 
             // Update the text box color if the user clicks OK 
             if (MyDialog.ShowDialog() == DialogResult.OK)
@@ -276,7 +393,7 @@ namespace TowersofHanoi
             // Sets the initial color select to the current text color.
             MyDialog.Color = PoleBackground.BackColor;
 
-            
+
 
             // Update the text box color if the user clicks OK 
             if (MyDialog.ShowDialog() == DialogResult.OK)
@@ -298,7 +415,7 @@ namespace TowersofHanoi
             // Sets the initial color select to the current text color.
             MyDialog.Color = GameBackground.BackColor;
 
-            
+
 
             // Update the text box color if the user clicks OK 
             if (MyDialog.ShowDialog() == DialogResult.OK)
@@ -306,6 +423,86 @@ namespace TowersofHanoi
                 GameBackground.BackColor = MyDialog.Color;
                 backgroundOfGame = MyDialog.Color;
             }
+
+        }
+
+        private void AIMode_Click(object sender, EventArgs e)
+        {
+            GamePanel.Controls.Clear();
+            PictureBox loadingBox = new PictureBox();
+            loadingBox.Size = new Size(GamePanel.Width - 1, GamePanel.Height - 1);
+            loadingBox.Location = new Point(0, 0);
+            loadingBox.Image = Properties.Resources.HardGif;
+            loadingBox.Visible = true;
+            loadingBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            GamePanel.Controls.Add(loadingBox);
+            for (long i = 0; i < 10_000_000_000; i++)
+            {
+
+            }
+            GamePanel.Controls.Clear();
+
+            var gameObjects = InitializePictureButtons(globPoles);
+            var (locPictureBoxes, buttons) = gameObjects;
+            gameData = AISolvePoles(globPoles, globDisks);
+            globPBoxes = locPictureBoxes;
+            updateDictionary(locPictureBoxes);
+            updateBPDictionary(locPictureBoxes, buttons);
+            GamePanel.BackColor = backgroundOfGame;
+            foreach (var pictureBox in locPictureBoxes)
+            {
+                pictureBox.Paint += PictureBox_Paint;
+            }
+            DrawPolesAndDisks(locPictureBoxes);
+            buttonPresses = 0;
+
+        }
+
+        private static List<Stack<int>> AISolvePoles(int poles, int disks)
+        {
+            List<Stack<int>> poleList = new List<Stack<int>>();
+
+            for (int i = 0; i < poles; i++)
+            {
+                Stack<int> pole = new Stack<int>();
+
+                // Only fill the first stack
+                if (i == poles - 1)
+                {
+                    for (int j = disks; j >= 1; j--)
+                    {
+                        pole.Push(j);
+                    }
+                }
+
+                poleList.Add(pole);
+            }
+
+            return poleList;
+        }
+
+        private void Check_Click(object sender, EventArgs e)
+        {
+            PictureBox lastBox = globPBoxes[globPBoxes.Count() - 1];
+            Stack<int> lastStack = globPoleStack[lastBox];
+
+            if (lastStack.Count() != 0 && lastStack.Peek() == 1)
+            {
+                Check.Text = "Game Complete!";
+                Check.BackColor = Color.Green;
+                Check.Font = new System.Drawing.Font("Stencil", 16, System.Drawing.FontStyle.Regular);
+
+            }
+            else
+            {
+                Check.Text = "Game Not Over!";
+                Check.BackColor = Color.Red;
+                Check.Font = new System.Drawing.Font("Stencil", 16, System.Drawing.FontStyle.Regular);
+            }
+        }
+
+        private void GamePanel_Paint(object sender, PaintEventArgs e)
+        {
 
         }
     }
