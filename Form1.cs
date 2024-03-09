@@ -429,16 +429,15 @@ namespace TowersofHanoi
         private void AIMode_Click(object sender, EventArgs e)
         {
             GamePanel.Controls.Clear();
-            PictureBox loadingBox = new PictureBox();
-            loadingBox.Size = new Size(GamePanel.Width - 1, GamePanel.Height - 1);
-            loadingBox.Location = new Point(0, 0);
-            loadingBox.Image = Properties.Resources.HardGif;
-            loadingBox.Visible = true;
-            loadingBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            GamePanel.Controls.Add(loadingBox);
-            for (long i = 0; i < 10_000_000_000; i++)
+            ProgressBar pBar = new ProgressBar();
+            pBar.Minimum = 0;
+            pBar.Maximum = 100_000_000;
+            pBar.Size = new Size(500, 60);
+            pBar.Location = new Point(Convert.ToInt32((GamePanel.Width - pBar.Width) / 2), Convert.ToInt32((GamePanel.Height - pBar.Height) / 2));
+            GamePanel.Controls.Add(pBar);
+            for (int i = 0; i < 10_000_000; i++)
             {
-
+                pBar.PerformStep();
             }
             GamePanel.Controls.Clear();
 

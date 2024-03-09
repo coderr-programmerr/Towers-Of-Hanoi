@@ -121,10 +121,16 @@
   <data name="HardGif" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\339.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Inti Illimani" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Inti Illimani.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="I_Deserve_A_Little_Bit_More" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\I Deserve A Little Bit More.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Loading_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Loading_icon.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Stereo Love" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Stereo Love.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
